@@ -1,0 +1,11 @@
+{
+  "name": "vehicle-producer",
+  "version": "1.0.0",
+  "main": "vehicleProducer.js",
+  "dependencies": {
+    "kafkajs": "^2.2.4"
+  },
+  "scripts": {
+    "start": "node vehicleProducer.js"
+  }
+}
