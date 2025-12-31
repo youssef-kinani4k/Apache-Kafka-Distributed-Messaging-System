@@ -61,7 +61,7 @@ Cloner le dépôt :
 
 ```bash
 git clone https://github.com/votre-user/trackstream.git
-cd trackstream
+cd Apache-Kafka-Distributed-Messaging-System
 ```
 
 Lancer l'application :
