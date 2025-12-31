@@ -7,7 +7,6 @@ const kafka = new Kafka({
 
 const producer = kafka.producer();
 
-// Données initiales pour simuler le mouvement (Casablanca)
 const vehicles = [
   { id: 'V001', lat: 33.5731, lon: -7.5898 },
   { id: 'V002', lat: 33.5890, lon: -7.6100 },
@@ -17,10 +16,10 @@ const vehicles = [
 const connectProducer = async () => {
   try {
     await producer.connect();
-    console.log('✅ Producer connecté à Kafka');
+    console.log('Producer connecté à Kafka');
     startProducing();
   } catch (error) {
-    console.error('❌ Erreur connexion Producer, nouvel essai dans 5s...', error);
+    console.error('Erreur connexion Producer, nouvel essai dans 5s...', error);
     setTimeout(connectProducer, 5000);
   }
 };
@@ -28,10 +27,9 @@ const connectProducer = async () => {
 const startProducing = () => {
   setInterval(async () => {
     const messages = vehicles.map(vehicle => {
-      // Simulation de déplacement aléatoire
       vehicle.lat += (Math.random() - 0.5) * 0.001;
       vehicle.lon += (Math.random() - 0.5) * 0.001;
-      const speed = Math.floor(Math.random() * 60) + 20; // 20-80 km/h
+      const speed = Math.floor(Math.random() * 60) + 20;
 
       const data = {
         vehicle_id: vehicle.id,
@@ -49,11 +47,11 @@ const startProducing = () => {
         topic: 'vehicle-tracking',
         messages: messages,
       });
-      console.log(`📤 Envoyé ${messages.length} positions`);
+      console.log(`Envoyé ${messages.length} positions`);
     } catch (err) {
       console.error('Erreur envoi Kafka', err);
     }
-  }, 2000); // Toutes les 2 secondes
+  }, 2000);
 };
 
 connectProducer();

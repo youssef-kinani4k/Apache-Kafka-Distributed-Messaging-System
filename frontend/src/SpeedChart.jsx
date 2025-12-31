@@ -11,7 +11,6 @@ import {
 } from 'chart.js';
 import { Line } from 'react-chartjs-2';
 
-// Enregistrement des composants Chart.js
 ChartJS.register(
   CategoryScale,
   LinearScale,
@@ -23,8 +22,6 @@ ChartJS.register(
 );
 
 const SpeedChart = ({ vehiclesData }) => {
-  // Préparer les données pour le graph
-  // On prend les labels (temps) du premier véhicule trouvé (juste pour l'axe X)
   const firstVehicleKey = Object.keys(vehiclesData)[0];
   const labels = firstVehicleKey 
     ? vehiclesData[firstVehicleKey].history.map(h => new Date(h.timestamp).toLocaleTimeString())
@@ -32,7 +29,6 @@ const SpeedChart = ({ vehiclesData }) => {
 
   const datasets = Object.keys(vehiclesData).map((vId, index) => {
     const vehicle = vehiclesData[vId];
-    // Couleurs différentes pour chaque ligne
     const colors = ['#FF6384', '#36A2EB', '#FFCE56']; 
     
     return {
@@ -40,7 +36,7 @@ const SpeedChart = ({ vehiclesData }) => {
       data: vehicle.history.map(h => h.speed),
       borderColor: colors[index % colors.length],
       backgroundColor: colors[index % colors.length],
-      tension: 0.4, // Courbe lissée
+      tension: 0.4,
     };
   });
 
@@ -57,9 +53,9 @@ const SpeedChart = ({ vehiclesData }) => {
       title: { display: true, text: 'Historique des Vitesses (Temps Réel)' },
     },
     scales: {
-      y: { min: 0, max: 100 } // Echelle de vitesse fixe pour mieux voir
+      y: { min: 0, max: 100 }
     },
-    animation: { duration: 0 } // Désactiver l'anim pour fluidifier le temps réel
+    animation: { duration: 0 }
   };
 
   return (

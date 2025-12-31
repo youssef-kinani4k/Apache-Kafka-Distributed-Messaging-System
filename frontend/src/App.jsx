@@ -10,9 +10,14 @@ function App() {
   const [alerts, setAlerts] = useState([]);
 
   useEffect(() => {
-    function onConnect() { setIsConnected(true); }
-    function onDisconnect() { setIsConnected(false); }
-    
+    function onConnect() {
+      setIsConnected(true);
+    }
+
+    function onDisconnect() {
+      setIsConnected(false);
+    }
+
     function onVehicleUpdate(data) {
       setVehicleData(data);
     }
@@ -42,30 +47,35 @@ function App() {
     averageSpeed: v.averageSpeed
   }));
 
-  // --- CALCUL DES KPI ---
   const activeCount = vehiclesArray.length;
-  const fleetAvgSpeed = activeCount > 0 
-    ? (vehiclesArray.reduce((acc, v) => acc + v.speed, 0) / activeCount).toFixed(0) 
-    : 0;
+
+  const fleetAvgSpeed =
+    activeCount > 0
+      ? (vehiclesArray.reduce((acc, v) => acc + v.speed, 0) / activeCount).toFixed(0)
+      : 0;
+
   const highSpeedCount = vehiclesArray.filter(v => v.speed > 70).length;
 
   return (
     <div className="App">
-      
-      {/* --- NOTIFICATIONS FLOTTANTES --- */}
       <div className="toast-container">
         {alerts.map((alert) => (
           <div key={alert.id} className="toast">
             <div>
-              <div style={{ fontWeight: '700', color: '#1e293b' }}>Alerte : {alert.vehicle_id}</div>
-              <div style={{ color: '#64748b', fontSize: '0.9rem' }}>{alert.message}</div>
-              <div style={{ fontSize: '0.75rem', color: '#94a3b8', marginTop: '4px' }}>{alert.time}</div>
+              <div style={{ fontWeight: '700', color: '#1e293b' }}>
+                Alerte : {alert.vehicle_id}
+              </div>
+              <div style={{ color: '#64748b', fontSize: '0.9rem' }}>
+                {alert.message}
+              </div>
+              <div style={{ fontSize: '0.75rem', color: '#94a3b8', marginTop: '4px' }}>
+                {alert.time}
+              </div>
             </div>
           </div>
         ))}
       </div>
 
-      {/* --- HEADER --- */ }
       <header className="app-header">
         <div className="brand">
           Track<span>Stream</span>
@@ -77,8 +87,6 @@ function App() {
       </header>
 
       <div className="content">
-        
-        {/* --- KPI CARDS --- */}
         <div className="kpi-grid">
           <div className="kpi-card">
             <div className="kpi-info">
@@ -86,21 +94,30 @@ function App() {
               <p>{activeCount}</p>
             </div>
           </div>
+
           <div className="kpi-card">
             <div className="kpi-info">
               <h4>Vitesse Moyenne Flotte</h4>
-              <p>{fleetAvgSpeed} <span style={{fontSize:'1rem'}}>km/h</span></p>
+              <p>
+                {fleetAvgSpeed}{' '}
+                <span style={{ fontSize: '1rem' }}>km/h</span>
+              </p>
             </div>
           </div>
-          <div className="kpi-card" style={highSpeedCount > 0 ? {borderColor: '#ef4444'} : {}}>
+
+          <div
+            className="kpi-card"
+            style={highSpeedCount > 0 ? { borderColor: '#ef4444' } : {}}
+          >
             <div className="kpi-info">
               <h4>Excès Vitesse (Actuel)</h4>
-              <p style={highSpeedCount > 0 ? {color: '#ef4444'} : {}}>{highSpeedCount}</p>
+              <p style={highSpeedCount > 0 ? { color: '#ef4444' } : {}}>
+                {highSpeedCount}
+              </p>
             </div>
           </div>
         </div>
 
-        {/* --- DASHBOARD GRID (MAP + TABLE) --- */}
         <div className="dashboard-grid">
           <div className="panel">
             <div className="panel-header">
@@ -113,7 +130,7 @@ function App() {
             <div className="panel-header">
               <h3 className="panel-title">État de la flotte</h3>
             </div>
-            <div style={{overflowX: 'auto'}}>
+            <div style={{ overflowX: 'auto' }}>
               <table>
                 <thead>
                   <tr>
@@ -124,18 +141,27 @@ function App() {
                 </thead>
                 <tbody>
                   {vehiclesArray.length === 0 ? (
-                    <tr><td colSpan="3">Chargement...</td></tr>
+                    <tr>
+                      <td colSpan="3">Chargement...</td>
+                    </tr>
                   ) : (
                     vehiclesArray.map((v) => (
                       <tr key={v.vehicle_id}>
-                        <td><strong>{v.vehicle_id}</strong></td>
                         <td>
-                          {v.speed > 70 
-                            ? <span className="tag tag-danger">{v.speed} km/h</span>
-                            : <span>{v.speed} km/h</span>
-                          }
+                          <strong>{v.vehicle_id}</strong>
                         </td>
-                        <td style={{color: '#3b82f6', fontWeight: 'bold'}}>{v.averageSpeed}</td>
+                        <td>
+                          {v.speed > 70 ? (
+                            <span className="tag tag-danger">
+                              {v.speed} km/h
+                            </span>
+                          ) : (
+                            <span>{v.speed} km/h</span>
+                          )}
+                        </td>
+                        <td style={{ color: '#3b82f6', fontWeight: 'bold' }}>
+                          {v.averageSpeed}
+                        </td>
                       </tr>
                     ))
                   )}
@@ -145,23 +171,22 @@ function App() {
           </div>
         </div>
 
-        {/* --- CHART SECTION --- */}
         <div className="panel">
-           <div className="panel-header">
-              <h3 className="panel-title">Analyse des Tendances</h3>
-            </div>
+          <div className="panel-header">
+            <h3 className="panel-title">Analyse des Tendances</h3>
+          </div>
           <SpeedChart vehiclesData={vehicleData} />
         </div>
 
-        {/* --- DETAILED HISTORY --- */}
         <div>
-          <h3 style={{color: '#0f172a', marginBottom: '1rem'}}>Historique Détaillé</h3>
+          <h3 style={{ color: '#0f172a', marginBottom: '1rem' }}>
+            Historique Détaillé
+          </h3>
           <div className="history-grid">
             {Object.keys(vehicleData).sort().map((vehicleId) => {
               const vehicle = vehicleData[vehicleId];
               const last10History = [...vehicle.history].reverse().slice(0, 10);
-              
-              // Déterminer la classe de couleur
+
               let colorClass = 'bg-default';
               if (vehicleId === 'V001') colorClass = 'bg-V001';
               if (vehicleId === 'V002') colorClass = 'bg-V002';
@@ -171,26 +196,40 @@ function App() {
                 <div key={vehicleId} className="vehicle-card">
                   <div className={`card-header ${colorClass}`}>
                     <span>🚗 {vehicleId}</span>
-                    <span style={{fontSize: '0.8rem', opacity: 0.9}}>
+                    <span style={{ fontSize: '0.8rem', opacity: 0.9 }}>
                       {new Date(vehicle.current.timestamp).toLocaleTimeString()}
                     </span>
                   </div>
-                  
+
                   <div className="card-body">
                     <div className="stat-row">
                       <div>
-                        <div style={{fontSize: '0.75rem', color: '#64748b'}}>Position Actuelle</div>
-                        <div style={{fontFamily: 'monospace', fontSize: '0.9rem'}}>
-                          {vehicle.current.latitude.toFixed(4)}, {vehicle.current.longitude.toFixed(4)}
+                        <div style={{ fontSize: '0.75rem', color: '#64748b' }}>
+                          Position Actuelle
+                        </div>
+                        <div
+                          style={{
+                            fontFamily: 'monospace',
+                            fontSize: '0.9rem'
+                          }}
+                        >
+                          {vehicle.current.latitude.toFixed(4)},{' '}
+                          {vehicle.current.longitude.toFixed(4)}
                         </div>
                       </div>
-                      <div style={{textAlign: 'right'}}>
-                        <div style={{fontSize: '0.75rem', color: '#64748b'}}>Moyenne</div>
-                        <div style={{fontWeight: '700', color: '#0f172a'}}>{vehicle.averageSpeed} km/h</div>
+                      <div style={{ textAlign: 'right' }}>
+                        <div style={{ fontSize: '0.75rem', color: '#64748b' }}>
+                          Moyenne
+                        </div>
+                        <div
+                          style={{ fontWeight: '700', color: '#0f172a' }}
+                        >
+                          {vehicle.averageSpeed} km/h
+                        </div>
                       </div>
                     </div>
 
-                    <table style={{fontSize: '0.8rem'}}>
+                    <table style={{ fontSize: '0.8rem' }}>
                       <thead>
                         <tr>
                           <th>Heure</th>
@@ -201,11 +240,25 @@ function App() {
                       <tbody>
                         {last10History.map((h, idx) => (
                           <tr key={idx}>
-                            <td style={{color:'#64748b'}}>{new Date(h.timestamp).toLocaleTimeString()}</td>
-                            <td style={{fontFamily: 'monospace', fontSize: '0.75rem'}}>
-                              {h.latitude?.toFixed(3)}, {h.longitude?.toFixed(3)}
+                            <td style={{ color: '#64748b' }}>
+                              {new Date(h.timestamp).toLocaleTimeString()}
                             </td>
-                            <td style={h.speed > 70 ? {color: '#ef4444', fontWeight:'700'} : {}}>
+                            <td
+                              style={{
+                                fontFamily: 'monospace',
+                                fontSize: '0.75rem'
+                              }}
+                            >
+                              {h.latitude?.toFixed(3)},{' '}
+                              {h.longitude?.toFixed(3)}
+                            </td>
+                            <td
+                              style={
+                                h.speed > 70
+                                  ? { color: '#ef4444', fontWeight: '700' }
+                                  : {}
+                              }
+                            >
                               {h.speed}
                             </td>
                           </tr>
@@ -218,7 +271,6 @@ function App() {
             })}
           </div>
         </div>
-
       </div>
     </div>
   );
